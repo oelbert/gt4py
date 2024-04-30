@@ -237,7 +237,7 @@ class UnrollVectorExpressions(IRNodeMapper):
             node = [list(x) for x in zip(*node)]
             return node
 
-        return self.generic_visit(node, **kwargs)
+        return self.generic_visit(node, fields_decls=fields_decls, **kwargs)
 
     def visit_BinOpExpr(self, node: BinOpExpr, *, fields_decls: Dict[str, FieldDecl], **kwargs):
         lhs = self.visit(node.lhs, fields_decls=fields_decls, **kwargs)
@@ -267,7 +267,9 @@ class UnrollVectorExpressions(IRNodeMapper):
                     result.append(BinOpExpr(op=node.op, lhs=lhs_el, rhs=rhs, loc=node.loc))
             # scalar and scalar fallback
             else:
-                result = self.generic_visit(node, **kwargs)
+                result = self.generic_visit(
+                    node, fields_decls=fields_decls, **kwargs
+                )
 
         return result
 
